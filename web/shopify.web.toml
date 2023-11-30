@@ -2,4 +2,4 @@ roles = ["backend"]
 
 
 [commands]
-dev = "venv/Scripts/python manage.py runserver"
+dev = "venv/bin/python3 manage.py runserver"
