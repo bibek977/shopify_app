@@ -28,6 +28,10 @@ export default function App() {
                                     label: t("NavigationMenu.pageName"),
                                     destination: "/pagename",
                                 },
+                                {
+                                    label: "Products",
+                                    destination: "/products",
+                                },
                             ]}
                         />
                         <Routes pages={pages} />

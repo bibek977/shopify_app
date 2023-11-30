@@ -183,3 +183,25 @@ npm run build --api-key=REPLACE_ME
         -   [`useTranslation` hook](https://react.i18next.com/latest/usetranslation-hook)
         -   [`Trans` component usage with components array](https://react.i18next.com/latest/trans-component#alternative-usage-components-array)
     -   [i18n-ally VS Code extension](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
+
+
+## EXTRA CONFIG
+
+- [In frontend folder shopify.web.toml] update this
+    `[commands]
+        dev = "venv/bin/python3 manage.py runserver"`
+
+- [If  migration doen't work properly]
+    `python3 manage.py migrate --run-sync`
+
+- [To change app name in root folder package.json] change the "name" : "your-app-name"
+    `
+            "name": "sample-django-app",
+    `
+- [To change the scopes in root folder shopify.app.toml]
+    `
+    client_id = "145db729dee898319f99baef5595614d"    ##[if it required only]
+    scopes = "write_products, write_content, write_themes, read_products"
+    `
+    - [Then run the code]
+        `npm run shopify app config push`

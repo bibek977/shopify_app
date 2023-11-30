@@ -1,3 +1,4 @@
 # This file stores configurations for your Shopify app.
 
-scopes = "write_products, write_content, write_themes"
+client_id = "145db729dee898319f99baef5595614d"
+scopes = "write_products, write_content, write_themes, read_products"
