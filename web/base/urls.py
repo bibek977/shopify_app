@@ -28,5 +28,5 @@ urlpatterns = [
     path("api/auth/callback", callback, name="callback"),
     path("api/auth/", UpdateAPPView.as_view(), name="update"),
     path("api/webhooks", uninstall, name="uninstall"),
-    path("products/",include("products.urls"))
+    path("api/products/",include("products.urls"))
 ]

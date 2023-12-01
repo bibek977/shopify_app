@@ -1,14 +1,375 @@
-import React from 'react'
-import { useAppQuery } from '../hooks'
+import {
+  TextField,
+  IndexTable,
+  LegacyCard,
+  IndexFilters,
+  useSetIndexFiltersMode,
+  useIndexResourceState,
+  Text,
+  ChoiceList,
+  RangeSlider,
+  Badge,
+  Button
+} from '@shopify/polaris';
+import {useState, useCallback} from 'react';
+import {useAppQuery} from '../hooks'
 
-const products = () => {
-    const {data, isLoading} = useAppQuery({url : "/products", reactQueryOptions:{
-        onSuccess:data=>console.log('products', data)
-    }})
+
+export default function Products() {
+  const sleep = (ms) =>new Promise((resolve) => setTimeout(resolve, ms));
+
+const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
+  onSuccess:(data)=>console.log(data)
+}})
+
+
+  const [itemStrings, setItemStrings] = useState([
+    'All']);
+  const deleteView = (index) => {
+    const newItemStrings = [...itemStrings];
+    newItemStrings.splice(index, 1);
+    setItemStrings(newItemStrings);
+    setSelected(0);
+  };
+
+  const duplicateView = async (name) => {
+    setItemStrings([...itemStrings, name]);
+    setSelected(itemStrings.length);
+    await sleep(1);
+    return true;
+  };
+
+  const tabs = itemStrings.map((item, index) => ({
+    content: item,
+    index,
+    onAction: () => {},
+    id: `${item}-${index}`,
+    isLocked: index === 0,
+    actions:
+      index === 0
+        ? []
+        : [
+            {
+              type: 'rename',
+              onAction: () => {},
+              onPrimaryAction: async (value)=> {
+                const newItemsStrings = tabs.map((item, idx) => {
+                  if (idx === index) {
+                    return value;
+                  }
+                  return item.content;
+                });
+                await sleep(1);
+                setItemStrings(newItemsStrings);
+                return true;
+              },
+            },
+            {
+              type: 'duplicate',
+              onPrimaryAction: async (value)=> {
+                await sleep(1);
+                duplicateView(value);
+                return true;
+              },
+            },
+            {
+              type: 'edit',
+            },
+            {
+              type: 'delete',
+              onPrimaryAction: async () => {
+                await sleep(1);
+                deleteView(index);
+                return true;
+              },
+            },
+          ],
+  }));
+  const [selected, setSelected] = useState(0);
+  const onCreateNewView = async (value) => {
+    await sleep(500);
+    setItemStrings([...itemStrings, value]);
+    setSelected(itemStrings.length);
+    return true;
+  };
+  const sortOptions= [
+    {label: 'Title', value: 'TITLE ASC', directionLabel: 'Ascending'},
+    {label: 'TITLE', value: 'TITLE DESC', directionLabel: 'Descending'},
+    {label: 'VENDOR', value:'VENDOR ', directionLabel: 'VENDOR'},
+    {label: 'CREATED_AT', value: 'CREATED_AT ASC', directionLabel: 'Ascending'},
+    {label: 'CREATED_AT', value: 'CREATED_AT DESC', directionLabel: 'Descending'},
+    {label: 'UPDATED_AT', value: 'UPDATED_AT ASC', directionLabel: 'Ascending'},
+    {label: 'UPDATED_AT', value: 'UPDATED_AT DESC', directionLabel: 'Descending'},
+  ];
+  const [sortSelected, setSortSelected] = useState(['order asc']);
+  const {mode, setMode} = useSetIndexFiltersMode();
+  const onHandleCancel = () => {};
+
+  const onHandleSave = async () => {
+    await sleep(1);
+    return true;
+  };
+
+  const primaryAction=
+    selected === 0
+      ? {
+          type: 'save-as',
+          onAction: onCreateNewView,
+          disabled: false,
+          loading: false,
+        }
+      : {
+          type: 'save',
+          onAction: onHandleSave,
+          disabled: false,
+          loading: false,
+        };
+  const [accountStatus, setAccountStatus] = useState(
+    undefined,
+  );
+  const [moneySpent, setMoneySpent] = useState(
+    undefined,
+  );
+  const [taggedWith, setTaggedWith] = useState('');
+  const [queryValue, setQueryValue] = useState('');
+
+  const handleAccountStatusChange = useCallback(
+    (value) => setAccountStatus(value),
+    [],
+  );
+  const handleMoneySpentChange = useCallback(
+    (value) => setMoneySpent(value),
+    [],
+  );
+  const handleTaggedWithChange = useCallback(
+    (value) => setTaggedWith(value),
+    [],
+  );
+  const handleFiltersQueryChange = useCallback(
+    (value) => setQueryValue(value),
+    [],
+  );
+  const handleAccountStatusRemove = useCallback(
+    () => setAccountStatus(undefined),
+    [],
+  );
+  const handleMoneySpentRemove = useCallback(
+    () => setMoneySpent(undefined),
+    [],
+  );
+  const handleTaggedWithRemove = useCallback(() => setTaggedWith(''), []);
+  const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
+  const handleFiltersClearAll = useCallback(() => {
+    handleAccountStatusRemove();
+    handleMoneySpentRemove();
+    handleTaggedWithRemove();
+    handleQueryValueRemove();
+  }, [
+    handleAccountStatusRemove,
+    handleMoneySpentRemove,
+    handleQueryValueRemove,
+    handleTaggedWithRemove,
+  ]);
+
+  const filters = [
+    {
+      key: 'accountStatus',
+      label: 'Account status',
+      filter: (
+        <ChoiceList
+          title="Account status"
+          titleHidden
+          choices={[
+            {label: 'Enabled', value: 'enabled'},
+            {label: 'Not invited', value: 'not invited'},
+            {label: 'Invited', value: 'invited'},
+            {label: 'Declined', value: 'declined'},
+          ]}
+          selected={accountStatus || []}
+          onChange={handleAccountStatusChange}
+          allowMultiple
+        />
+      ),
+      shortcut: true,
+    },
+    {
+      key: 'taggedWith',
+      label: 'Tagged with',
+      filter: (
+        <TextField
+          label="Tagged with"
+          value={taggedWith}
+          onChange={handleTaggedWithChange}
+          autoComplete="off"
+          labelHidden
+        />
+      ),
+      shortcut: true,
+    },
+    {
+      key: 'moneySpent',
+      label: 'Money spent',
+      filter: (
+        <RangeSlider
+          label="Money spent is between"
+          labelHidden
+          value={moneySpent || [0, 500]}
+          prefix="$"
+          output
+          min={0}
+          max={2000}
+          step={1}
+          onChange={handleMoneySpentChange}
+        />
+      ),
+    },
+  ];
+
+  const appliedFilters = [];
+  if (accountStatus && !isEmpty(accountStatus)) {
+    const key = 'accountStatus';
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, accountStatus),
+      onRemove: handleAccountStatusRemove,
+    });
+  }
+  if (moneySpent) {
+    const key = 'moneySpent';
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, moneySpent),
+      onRemove: handleMoneySpentRemove,
+    });
+  }
+  if (!isEmpty(taggedWith)) {
+    const key = 'taggedWith';
+    appliedFilters.push({
+      key,
+      label: disambiguateLabel(key, taggedWith),
+      onRemove: handleTaggedWithRemove,
+    });
+  }
+
+  const orders = [
+    {
+      id: '1020',
+      order: (
+        <Text as="span" variant="bodyMd" fontWeight="semibold">
+          #1020
+        </Text>
+      ),
+      date: 'Jul 20 at 4:34pm',
+      customer: 'Jaydon Stanton',
+      total: '$969.44',
+      paymentStatus: <Badge progress="complete">Paid</Badge>,
+      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+    },
+  ];
+  const resourceName = {
+    singular: 'product',
+    plural: 'productss',
+  };
+
+  const {selectedResources, allResourcesSelected, handleSelectionChange} =
+    useIndexResourceState(orders);
+    console.log(selectedResources);
+
+
+  const rowMarkup = data?.products.map(
+    (
+      {id,title,vendor,created_at,updated_at,status},
+      index,
+    ) => (
+      <IndexTable.Row
+        id={id}
+        key={id}
+        selected={selectedResources.includes(id)}
+        position={index}
+      >
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {id}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{title}</IndexTable.Cell>
+        <IndexTable.Cell>{status}</IndexTable.Cell>
+        <IndexTable.Cell>{created_at}</IndexTable.Cell>
+        <IndexTable.Cell>{updated_at}</IndexTable.Cell>
+        <IndexTable.Cell>{vendor}</IndexTable.Cell>
+        {/* <IndexTable.Cell><Button variant="primary" onClick={deleteProduct}>Delete {title}</Button></IndexTable.Cell> */}
+      </IndexTable.Row>
+    ),
+  );
 
   return (
-    <div>{isLoading ? "Loading...":"Products"}</div>
-  )
+    <LegacyCard>
+      <IndexFilters
+        sortOptions={sortOptions}
+        sortSelected={sortSelected}
+        queryValue={queryValue}
+        queryPlaceholder="Searching in all"
+        onQueryChange={handleFiltersQueryChange}
+        onQueryClear={() => setQueryValue('')}
+        onSort={setSortSelected}
+        primaryAction={primaryAction}
+        cancelAction={{
+          onAction: onHandleCancel,
+          disabled: false,
+          loading: false,
+        }}
+        tabs={tabs}
+        selected={selected}
+        onSelect={setSelected}
+        canCreateNewView
+        onCreateNewView={onCreateNewView}
+        filters={filters}
+        appliedFilters={appliedFilters}
+        onClearAll={handleFiltersClearAll}
+        mode={mode}
+        setMode={setMode}
+      />
+      <IndexTable
+        resourceName={resourceName}
+        itemCount={orders.length}
+        selectedItemsCount={
+          allResourcesSelected ? 'All' : selectedResources.length
+        }
+        onSelectionChange={handleSelectionChange}
+        headings={[
+          {title: 'Product Id'},
+          {title: 'Title'},
+          {title: 'Status'},
+          {title: 'Updated At'},
+          {title: 'Created At'},
+          {title: 'Vendor'},
+        ]}
+      >
+        {rowMarkup}
+      </IndexTable>
+    </LegacyCard>
+  );
+
+  function disambiguateLabel(key, value ) {
+    switch (key) {
+      case 'moneySpent':
+        return `Money spent is between $${value[0]} and $${value[1]}`;
+      case 'taggedWith':
+        return `Tagged with ${value}`;
+      case 'accountStatus':
+        return (value ).map((val) => `Customer ${val}`).join(', ');
+      default:
+        return value ;
+    }
+  }
+
+  function isEmpty(value) {
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    } else {
+      return value === '' || value == null;
+    }
+  }
 }
 
-export default products
+

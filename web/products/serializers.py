@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from .models import Products
 
+class ProductSerializer(serializers.ModelSerializer):
 
-class ProductSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=100)
+    class Meta:
+        model = Products
+        fields = ["title","vendor"]

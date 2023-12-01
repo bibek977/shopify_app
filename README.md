@@ -205,3 +205,6 @@ npm run build --api-key=REPLACE_ME
     `
     - [Then run the code]
         `npm run shopify app config push`
+
+- [The api routing problem solved by must have to use ` "api/" `first]
+    `url : "api/products" `

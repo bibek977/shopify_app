@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from apps.accounts.decorators import session_token_required,session_token
 from django.http import HttpResponse,JsonResponse
 import shopify
@@ -7,25 +7,20 @@ from .serializers import ProductSerializer
 from rest_framework.permissions import IsAuthenticated
 from apps.accounts.authentication import ShopifyAuthentication
 from rest_framework.response import Response
+from .models import Products
+from rest_framework.renderers import JSONRenderer
+from rest_framework import viewsets
+import json
+    
 
-class ProductsView(GenericAPIView):
-    serializer_class = ProductSerializer
-    # permission_classes = [IsAuthenticated,]
-    # authentication_classes = [ShopifyAuthentication]
-
-    @session_token_required
-    def products(request,*args, **kwargs):
-        # product_list = shopify.Product.find()
-        # for p in product_list:
-            # p.to_dict()
-        name = "bibek"
-        s = ProductSerializer(name)
-        return Response(s.data)
+@session_token_required
+def products(request):
+    products = shopify.Product.find()
+    return JsonResponse({'products' : [p.to_dict() for p in products]})
 
 
-# def products(request):
-#     response = {
-#         "name" : "bibek"
-#     }
-#     print("===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n===================\n")
-#     return JsonResponse(products,safe=False)
+@session_token_required
+def products_delete(request,id):
+    product = shopify.Product.find(id)
+    product.destroy()
+    return redirect('products')
