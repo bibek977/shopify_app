@@ -4433,7 +4433,7 @@ shelljs@^0.8.1:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
-"shopify-frontend-template-react@file:/home/nerd/bibek_shopify_projects/shopify-django-boilerplate-main/web/frontend":
+"shopify-frontend-template-react@file:/home/bibek/nerd_platoon/shopify_app/web/frontend":
   version "1.0.0"
   resolved "file:web/frontend"
   dependencies:

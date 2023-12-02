@@ -276,9 +276,9 @@ const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
     console.log(selectedResources);
 
 
-  const rowMarkup = data?.products.map(
+  const rowMarkup = data?.map(
     (
-      {id,title,vendor,created_at,updated_at,status},
+      {id,title,vendor,updated_at,published_at,status},
       index,
     ) => (
       <IndexTable.Row
@@ -294,8 +294,8 @@ const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
         </IndexTable.Cell>
         <IndexTable.Cell>{title}</IndexTable.Cell>
         <IndexTable.Cell>{status}</IndexTable.Cell>
-        <IndexTable.Cell>{created_at}</IndexTable.Cell>
         <IndexTable.Cell>{updated_at}</IndexTable.Cell>
+        <IndexTable.Cell>{published_at}</IndexTable.Cell>
         <IndexTable.Cell>{vendor}</IndexTable.Cell>
         {/* <IndexTable.Cell><Button variant="primary" onClick={deleteProduct}>Delete {title}</Button></IndexTable.Cell> */}
       </IndexTable.Row>
