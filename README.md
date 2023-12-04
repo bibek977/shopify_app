@@ -208,3 +208,7 @@ npm run build --api-key=REPLACE_ME
 
 - [The api routing problem solved by must have to use ` "api/" `first]
     `url : "api/products" `
+
+- [Install tanstact react query in package.json of fronten]
+  `"@tanstack/react-query": "^4.29.19",
+    "@tanstack/react-query-devtools": "^4.29.19",`

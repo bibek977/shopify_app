@@ -4474,7 +4474,7 @@ shelljs@^0.8.1:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
-"shopify-frontend-template-react@file:/home/nerd/bibek_shopify_projects/shopify-django-boilerplate-main/web/frontend":
+"shopify-frontend-template-react@file:/home/bibek/nerd_platoon/shopify_app/web/frontend":
   version "1.0.0"
   resolved "file:web/frontend"
   dependencies:
@@ -4485,6 +4485,8 @@ shelljs@^0.8.1:
     "@shopify/app-bridge-react" "^3.7.7"
     "@shopify/i18next-shopify" "^0.2.3"
     "@shopify/polaris" "^12.1.1"
+    "@tanstack/react-query" "^4.29.19"
+    "@tanstack/react-query-devtools" "^4.29.19"
     "@vitejs/plugin-react" "1.2.0"
     i18next "^23.1.0"
     i18next-resources-to-backend "^1.1.4"

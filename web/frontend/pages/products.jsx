@@ -40,9 +40,10 @@ export default function Products() {
   // const {del_data} = useAppQuery({url:'api/products/delete',reactQueryOptions:{
   //   onSuccess:(del_data)=>console.log(del_data)}})
 
-  // const deleteProduct = useCallback(() => {
-  //   del_data
-  // }, []);
+  const deleteProduct = (id)=>{
+    console.log(id)
+  }
+  
 
   const [itemStrings, setItemStrings] = useState([
     'All']);
@@ -319,7 +320,7 @@ export default function Products() {
         <IndexTable.Cell>{published_at}</IndexTable.Cell>
         <IndexTable.Cell>{vendor}</IndexTable.Cell>
         {/* <IndexTable.Cell><Button variant="primary" onClick={edit}>Delete {title}</Button></IndexTable.Cell> */}
-        {/* <IndexTable.Cell><Button variant="primary" onClick={deleteProduct}>Delete {title}</Button></IndexTable.Cell> */}
+        <IndexTable.Cell><Button variant="primary" onClick={()=>deleteProduct(id)}>Delete {title}</Button></IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
