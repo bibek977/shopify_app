@@ -11,17 +11,38 @@ import {
   Badge,
   Button
 } from '@shopify/polaris';
-import {useState, useCallback} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {useAppQuery} from '../hooks'
-
+import CreateProduct from '../components/CreateProduct';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Products() {
   const sleep = (ms) =>new Promise((resolve) => setTimeout(resolve, ms));
 
-const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
-  onSuccess:(data)=>console.log(data)
-}})
+  const queryClient = useQueryClient()
+  const queryCache = queryClient.getQueryCache()
 
+  const {data:ddata, isLoading}=useAppQuery({url:'api/products',tag : ['products'], reactQueryOptions:{
+    // onSuccess:(data)=>console.log(data)
+  }})
+
+  const {state:daata} = queryCache.find(['products'])
+
+  const [data,setData]=useState(daata?.data);
+  useEffect(()=>setData(daata?.data),[daata])
+  // const {e_data} = useAppQuery({url:'api/products/edit',reactQueryOptions:{
+  //   onSuccess:(e_data)=>console.log(data)}})
+
+  // const edit = useCallback(() => {
+  //   e_data
+  // }, []);
+
+  // const {del_data} = useAppQuery({url:'api/products/delete',reactQueryOptions:{
+  //   onSuccess:(del_data)=>console.log(del_data)}})
+
+  // const deleteProduct = useCallback(() => {
+  //   del_data
+  // }, []);
 
   const [itemStrings, setItemStrings] = useState([
     'All']);
@@ -297,6 +318,7 @@ const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
         <IndexTable.Cell>{updated_at}</IndexTable.Cell>
         <IndexTable.Cell>{published_at}</IndexTable.Cell>
         <IndexTable.Cell>{vendor}</IndexTable.Cell>
+        {/* <IndexTable.Cell><Button variant="primary" onClick={edit}>Delete {title}</Button></IndexTable.Cell> */}
         {/* <IndexTable.Cell><Button variant="primary" onClick={deleteProduct}>Delete {title}</Button></IndexTable.Cell> */}
       </IndexTable.Row>
     ),
@@ -304,6 +326,7 @@ const {data, isLoading}=useAppQuery({url:'api/products', reactQueryOptions:{
 
   return (
     <LegacyCard>
+      <CreateProduct/>
       <IndexFilters
         sortOptions={sortOptions}
         sortSelected={sortSelected}

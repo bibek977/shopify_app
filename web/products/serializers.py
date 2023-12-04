@@ -4,8 +4,8 @@ import shopify
 from apps.accounts.decorators import session_token_required
 
 STATUS_CHOICES = (
-    ('active','active'),
-    ('draft','draft')
+    ('active','ACTIVE'),
+    ('draft','DRAFT')
 )
 
 
@@ -20,10 +20,12 @@ class ProductSerializer(serializers.Serializer):
 
     @session_token_required
     def create(self, validated_data):
-        product = shopify.Product
-        for attr in ['title','published_at','updated_at','status','vendor']:
-            setattr(product,attr,validated_data.get(attr))
-        product.save()
+        product = shopify.Product()
+        # for attr in ['title','published_at','updated_at','status','vendor']:
+            # setattr(product,attr,validated_data.get(attr))
+        product.title = validated_data['title']
+        # product.save()
+        return product.save()
 
     @session_token_required
     def update(self, instance, validated_data):
@@ -31,6 +33,6 @@ class ProductSerializer(serializers.Serializer):
         for attr in ['title','published_at','updated_at','status','vendor']:
             setattr(product,attr,validated_data.get(attr,getattr(instance,attr)))
 
-        product.save()
+        return product.save()
 
         return product

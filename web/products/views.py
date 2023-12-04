@@ -13,28 +13,55 @@ from rest_framework import viewsets
 import json
 from django.views import View
 from rest_framework.views import APIView   
-from django.views.decorators.csrf import csrf_exempt 
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 @session_token_required
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def products(request):
-    # prdouct = shopify.Product.find(8140922388668)
-    # prdouct.destroy()
     products = shopify.Product.find()
     s = ProductSerializer(products,many=True)
     return Response(s.data)
 
+@csrf_exempt
+@session_token_required
+@api_view(['GET','POST'])
+def create_products(request,*args, **kwargs):
+
+    # product = shopify.Product()
+    # product.title = "new shop tshirts 1"
+    # product.save()  
+    # s = ProductSerializer(shopify.Product.find(),many=True)
+    # return Response(s.data)
+    if request.method == "POST":
+        data = request.data
+        s = ProductSerializer(data=data)
+        if s.is_valid():
+            s.save()
+            return Response({'products': request.data})
+        else:
+            return Response({'products' : s.errors})
+    else:
+        return Response({'products':'not post request'})
+
+@session_token_required
+@api_view(['GET','PUT'])
+def put_products(request,*args, **kwargs):
+    # data = request.data
+    product = shopify.Product.find(8142893154492)
+    product.title = "cotton pants 100"
+    product.save()  
+    s = ProductSerializer(shopify.Product.find(),many=True)
+
+    return Response(s.data)
 
 
-# class ProductsView(APIView):
-
-#     @session_token_required
-#     def get(self,request,format=None,*args, **kwargs):
-#         products = shopify.Product.find()
-#         s = ProductSerializer(products,many=True)
-#         return Response(s.data)
-
-
+@session_token_required
+@api_view(['GET','DELETE'])
+def delete_products(request,*args, **kwargs):
+    product = shopify.Product.find(8142890729660)
+    product.destroy()
+    s = ProductSerializer(shopify.Product.find(),many=True)
+    return Response(s.data)
