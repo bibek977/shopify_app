@@ -16,6 +16,7 @@ import {useAppQuery} from '../hooks'
 import CreateProduct from '../components/CreateProduct';
 import { useQueryClient } from '@tanstack/react-query';
 import EditProduct from '../components/EditProduct';
+import UpdateProduct from '../components/UpdateProduct';
 
 export default function Products() {
   const sleep = (ms) =>new Promise((resolve) => setTimeout(resolve, ms));
@@ -325,6 +326,9 @@ export default function Products() {
         <IndexTable.Cell>
 
         <EditProduct data = {id} />
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          <UpdateProduct data={id} prevData={[title, vendor, status]} />
         </IndexTable.Cell>
       </IndexTable.Row>
     ),

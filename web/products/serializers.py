@@ -14,5 +14,5 @@ class ProductSerializer(serializers.Serializer):
     published_at = serializers.DateTimeField(required = False)
     updated_at = serializers.DateTimeField(required = False)
     # status = serializers.ChoiceField(choices=STATUS_CHOICES)
-    status = serializers.CharField(max_length=50,required=False)
-    vendor = serializers.CharField(max_length = 200,required=False)
+    status = serializers.CharField(max_length=50,required=False,allow_blank=True)
+    vendor = serializers.CharField(max_length = 200,required=False,allow_blank=True)

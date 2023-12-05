@@ -7,9 +7,11 @@ import { useState, useCallback } from "react";
 import CreateProductForm from "./CreateProductForm";
 import { useAppQuery } from "../hooks";
 import EditProductForm from "./EditProductForm";
+import UpdateProductForm from "./UpdateProductForm";
 
-const EditProduct = ({data}) => {
+const UpdateProduct = ({data, prevData}) => {
     // console.log(data)
+//     console.log(prevData)
      const [active, setActive] = useState(false);
 
      const handleChange = useCallback(() => {
@@ -18,7 +20,7 @@ const EditProduct = ({data}) => {
      });
 
 
-     const activator = <Button onClick={handleChange}>Delete</Button>;
+     const activator = <Button onClick={handleChange}>Edit</Button>;
 
      
     
@@ -31,11 +33,11 @@ const EditProduct = ({data}) => {
                     onClose={handleChange}
                     title="Create New Product">
                     <Modal.Section>
-                        <EditProductForm d = {data}></EditProductForm>
+                        <UpdateProductForm d = {data} p = {prevData} />
                     </Modal.Section>
                </Modal>
           </div>
      );
 };
 
-export default EditProduct;
+export default UpdateProduct;

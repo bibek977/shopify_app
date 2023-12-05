@@ -43,23 +43,30 @@ def create_products(request,*args, **kwargs):
 
 @csrf_exempt
 @session_token_required
-@api_view(['GET','PUT'])
-def put_products(request,*args, **kwargs):
-    # data = request.data
-    product = shopify.Product.find(8142893154492)
-    product.title = "cotton pants 100"
-    product.save()  
-    s = ProductSerializer(shopify.Product.find(),many=True)
-
-    return Response(s.data)
+@api_view(['GET','POST'])
+def update_products(request,*args, **kwargs):
+    if request.method == "POST":
+        s = ProductSerializer(data = request.data)
+        if s.is_valid():
+            product = shopify.Product.find(request.data['id'])
+            # product.title = request.data['title']
+            product._update(request.data)
+            product.save()
+            return Response({'id': s.data})
+        else:
+            return Response({'id' : 'validation error'})
+    else:
+        return Response({'id':'not exist'})
 
 @csrf_exempt
 @session_token_required
-@api_view(['GET','DELETE'])
+@api_view(['GET','POST'])
 def delete_products(request,*args, **kwargs):
-    product = shopify.Product.find(request.data)
-    product.destroy()
-    s = ProductSerializer(shopify.Product.find(),many=True)
-    return Response(s.data)
+    if request.method == "POST":
+        id = request.data
+        product = shopify.Product.find(id)
+        product.destroy()
+        return Response({'id':id})
+
 
 

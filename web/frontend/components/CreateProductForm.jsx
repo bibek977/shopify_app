@@ -41,11 +41,6 @@ const[formData, setFormData]=useState({
   return (
     <Form onSubmit={handleSubmit}>
       <FormLayout>
-        {/* <Checkbox
-          label="Sign up for the Polaris newsletter"
-          checked={newsletter}
-          onChange={handleNewsLetterChange}
-        /> */}
 
         <TextField
           value={formData.title}
