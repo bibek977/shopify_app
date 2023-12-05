@@ -15,6 +15,7 @@ import {useState, useCallback, useEffect} from 'react';
 import {useAppQuery} from '../hooks'
 import CreateProduct from '../components/CreateProduct';
 import { useQueryClient } from '@tanstack/react-query';
+import EditProduct from '../components/EditProduct';
 
 export default function Products() {
   const sleep = (ms) =>new Promise((resolve) => setTimeout(resolve, ms));
@@ -40,9 +41,9 @@ export default function Products() {
   // const {del_data} = useAppQuery({url:'api/products/delete',reactQueryOptions:{
   //   onSuccess:(del_data)=>console.log(del_data)}})
 
-  const deleteProduct = (id)=>{
-    console.log(id)
-  }
+  // const deleteProduct = (id)=>{
+  //   console.log(id)
+  // }
   
 
   const [itemStrings, setItemStrings] = useState([
@@ -295,7 +296,7 @@ export default function Products() {
 
   const {selectedResources, allResourcesSelected, handleSelectionChange} =
     useIndexResourceState(orders);
-    console.log(selectedResources);
+    // console.log(selectedResources);
 
 
   const rowMarkup = data?.map(
@@ -320,7 +321,11 @@ export default function Products() {
         <IndexTable.Cell>{published_at}</IndexTable.Cell>
         <IndexTable.Cell>{vendor}</IndexTable.Cell>
         {/* <IndexTable.Cell><Button variant="primary" onClick={edit}>Delete {title}</Button></IndexTable.Cell> */}
-        <IndexTable.Cell><Button variant="primary" onClick={()=>deleteProduct(id)}>Delete {title}</Button></IndexTable.Cell>
+        {/* <IndexTable.Cell><Button variant="primary" onClick={()=>deleteProduct(id)}>Delete {title}</Button></IndexTable.Cell> */}
+        <IndexTable.Cell>
+
+        <EditProduct data = {id} />
+        </IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
