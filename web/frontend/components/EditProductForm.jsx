@@ -13,7 +13,7 @@ const queryClient=useQueryClient();
       queryClient.invalidateQueries({queryKey:(['products'])})
     }
   }});
-  const {mutate:del }=useAppMutation({url:'/api/products/delete', method:'POST', reactQueryOptions:{
+  const {mutate:del }=useAppMutation({url:'/api/products/delete', method:'DELETE', reactQueryOptions:{
     onSuccess:(data)=>{
       console.log(data);
       queryClient.invalidateQueries({queryKey:(['products'])})

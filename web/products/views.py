@@ -60,9 +60,9 @@ def update_products(request,*args, **kwargs):
 
 @csrf_exempt
 @session_token_required
-@api_view(['GET','POST'])
+@api_view(['GET','DELETE'])
 def delete_products(request,*args, **kwargs):
-    if request.method == "POST":
+    if request.method == "DELETE":
         id = request.data
         product = shopify.Product.find(id)
         product.destroy()

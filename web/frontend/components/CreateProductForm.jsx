@@ -7,8 +7,8 @@ export default function CreateProductForm() {
 const queryClient=useQueryClient();
 const[formData, setFormData]=useState({
   title : "",
-  status : "active",
-  vendor : "sample django app"
+  status : "",
+  vendor : ""
 })
 
   const {mutate:create,isLoading }=useAppMutation({url:'/api/products/create', method:'POST', reactQueryOptions:{
