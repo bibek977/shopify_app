@@ -9,7 +9,8 @@ import {
   ChoiceList,
   RangeSlider,
   Badge,
-  Button
+  Button,
+  Spinner
 } from '@shopify/polaris';
 import {useState, useCallback, useEffect} from 'react';
 import {useAppQuery} from '../hooks'
@@ -27,6 +28,8 @@ export default function Products() {
   const {data:ddata, isLoading}=useAppQuery({url:'api/products',tag : ['products'], reactQueryOptions:{
     // onSuccess:(data)=>console.log(data)
   }})
+  
+  
 
   const {state:daata} = queryCache.find(['products'])
 
@@ -378,6 +381,7 @@ export default function Products() {
           {title: 'Vendor'},
         ]}
       >
+        {isLoading && <Spinner accessibilityLabel="Spinner example" size="large" />}
         {rowMarkup}
       </IndexTable>
     </LegacyCard>

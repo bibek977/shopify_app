@@ -1,9 +1,12 @@
-import {Form, FormLayout, Checkbox, TextField, Button} from '@shopify/polaris';
+import {Form, FormLayout, Checkbox, TextField, Button,Toast,Frame,Spinner} from '@shopify/polaris';
 import {useState, useCallback} from 'react';
 import { useAppMutation, useAppQuery } from '../hooks';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function CreateProductForm() {
+  const [active,setActive] = useState(false)
+  const [message,setMessage] = useState('product created')
+
 const queryClient=useQueryClient();
 const[formData, setFormData]=useState({
   title : "",
@@ -14,13 +17,15 @@ const[formData, setFormData]=useState({
   const {mutate:create,isLoading }=useAppMutation({url:'/api/products/create', method:'POST', reactQueryOptions:{
     onSuccess:(data)=>{
       console.log(data);
-      queryClient.invalidateQueries({queryKey:(['products'])})
+      queryClient.invalidateQueries({queryKey:(['products'])});
+      setMessage(data.products)
+      toggleActive()
     }
   }});
 
 
   const handleSubmit = async () => {
-    if (isLoading) return;
+    // if (isLoading) return;
     try {
          create(formData);
          console.log(formData)
@@ -38,7 +43,16 @@ const[formData, setFormData]=useState({
   const handleVendorChange = useCallback((value) => setFormData(data=>({...data,vendor:value})), []);
   const handleStatusChange = useCallback((value) => setFormData(data => ({...data,status:value})), []);
 
+  const toggleActive = useCallback(() => setActive((active) => !active), []);
+  const toastMarkup = active ? (
+    <Toast content={message} onDismiss={toggleActive} duration={4500} />
+  ) : null;
   return (
+    <>
+    <div style={{height: '300px'}}>
+
+    <Frame>
+
     <Form onSubmit={handleSubmit}>
       <FormLayout>
 
@@ -82,8 +96,16 @@ const[formData, setFormData]=useState({
           }
         />
 
-        <Button submit>Submit</Button>
+        <Button submit>
+          {isLoading?<Spinner accessibilityLabel="Small spinner example" size="small" />:"Create"}
+        </Button>
       </FormLayout>
     </Form>
+    {toastMarkup}
+    </Frame>
+    </div>
+
+    </>
+
   );
 }

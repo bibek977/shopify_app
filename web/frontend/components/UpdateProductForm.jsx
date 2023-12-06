@@ -1,12 +1,13 @@
-import {Form, FormLayout, Checkbox, TextField, Button} from '@shopify/polaris';
+import {Form, FormLayout, Checkbox, TextField, Button,Toast,Frame,Spinner} from '@shopify/polaris';
 import {useState, useCallback} from 'react';
 import { useAppMutation, useAppQuery } from '../hooks';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function UpdateProductForm({d,p}) {
-    // console.log(d)
-    // console.log(p)
-const queryClient=useQueryClient();
+  const [active,setActive] = useState(false)
+  const [message,setMessage] = useState('product updated')
+
+  const queryClient=useQueryClient();
 const[formData, setFormData]=useState({
     id : d,
   title : p[0],
@@ -18,7 +19,9 @@ const[formData, setFormData]=useState({
   const {mutate:update,isLoading }=useAppMutation({url:'/api/products/update', method:'POST', reactQueryOptions:{
     onSuccess:(data)=>{
       console.log(data);
-      queryClient.invalidateQueries({queryKey:(['products'])})
+      queryClient.invalidateQueries({queryKey:(['products'])});
+      setMessage(data.id)
+      toggleActive()
     }
   }});
 
@@ -38,9 +41,17 @@ const[formData, setFormData]=useState({
   const handleVendorChange = useCallback((value) => setFormData(data=>({...data,vendor:value})), []);
   const handleStatusChange = useCallback((value) => setFormData(data => ({...data,status:value})), []);
 
+  const toggleActive = useCallback(() => setActive((active) => !active), []);
+  const toastMarkup = active ? (
+    <Toast content={message} onDismiss={toggleActive} />
+  ) : null;
+  
   return (
     <>
     {/* <Button onClick={updateProduct}>UPdate</Button> */}
+    <div style={{height: '300px'}}>
+<Frame>
+
 
     <Form onSubmit={updateProduct}>
     <FormLayout>
@@ -85,10 +96,17 @@ const[formData, setFormData]=useState({
   }
 />
 
-<Button onClick={updateProduct}>Update</Button>
+<Button onClick={updateProduct}>
+  {isLoading?<Spinner accessibilityLabel="Small spinner example" size="small" />:"Update"
+  }
+  </Button>
 </FormLayout>
     </Form>
-   
+
+    {toastMarkup}
+    </Frame>
+
+  </div>
     </>
   );
 }

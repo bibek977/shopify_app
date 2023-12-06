@@ -36,9 +36,10 @@ def create_products(request,*args, **kwargs):
         p = shopify.Product(request.data)
         # p.title = request.data['title']
         p.save()
-        return Response({'products': request.data})
+        title = p.title
+        return Response({'products': f"{title} created"})
     else:
-        return Response({'products' : s.errors})
+        return Response({'products' : f"{s.errors} occured"})
 
 
 @csrf_exempt
@@ -51,8 +52,9 @@ def update_products(request,*args, **kwargs):
             product = shopify.Product.find(request.data['id'])
             # product.title = request.data['title']
             product._update(request.data)
+            title = product.title
             product.save()
-            return Response({'id': s.data})
+            return Response({'id': f"{title} updated"})
         else:
             return Response({'id' : 'validation error'})
     else:
@@ -65,8 +67,9 @@ def delete_products(request,*args, **kwargs):
     if request.method == "DELETE":
         id = request.data
         product = shopify.Product.find(id)
+        title = product.title
         product.destroy()
-        return Response({'id':id})
+        return Response({'id':f"{title} deleted"})
 
 
 
