@@ -72,4 +72,8 @@ def delete_products(request,*args, **kwargs):
         return Response({'id':f"{title} deleted"})
 
 
+@method_decorator(session_token_required,name='dispatch')
+class ProductsView(viewsets.ModelViewSet):
 
+    queryset = shopify.Product()
+    serializer_class = ProductSerializer

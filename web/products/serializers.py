@@ -32,3 +32,11 @@ class ProductSerializer(serializers.Serializer):
         if value == "bibek custom shop":
             raise serializers.ValidationError("vendor name is matched with owner's vendor name")
         return value
+    
+
+    
+# class ProductModelSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = shopify.Product()
+#         fields = ['id','title','published_at','updated_at','status','vendor']
