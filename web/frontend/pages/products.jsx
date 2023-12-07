@@ -34,12 +34,14 @@ export default function Products() {
   // const [title,setTitle] = useState('draft')
   const [title,setTitle] = useState("")
   const [queryValue, setQueryValue] = useState('');
+  const [sortData,setSortData] = useState('')
   const [sortSelected, setSortSelected] = useState('TITLE ASC');
   useEffect(() => {
     let change;
     clearTimeout(change);
     change = setTimeout(() => {
          setTitle(queryValue);
+         setSortData(sortSelected);
     }, 2000);
     return () => clearTimeout(change);
 }, [queryValue]);
@@ -50,7 +52,7 @@ export default function Products() {
   // }})
   
   // dinesh
-  const URL = `/api/products?search=${title}&sort=${sortSelected}`
+  const URL = `/api/products?search=${title}&sort=${sortData}`
      const [url, setUrl] = useState(URL);
 
      useEffect(() => {
@@ -165,11 +167,12 @@ export default function Products() {
   const sortOptions= [
     {label: 'TITLE', value: 'TITLE ASC', directionLabel: 'Ascending'},
     {label: 'TITLE', value: 'TITLE DESC', directionLabel: 'Descending'},
-    {label: 'VENDOR', value:'VENDOR ', directionLabel: 'VENDOR'},
-    {label: 'CREATED_AT', value: 'CREATED_AT ASC', directionLabel: 'Ascending'},
-    {label: 'CREATED_AT', value: 'CREATED_AT DESC', directionLabel: 'Descending'},
-    {label: 'UPDATED_AT', value: 'UPDATED_AT ASC', directionLabel: 'Ascending'},
-    {label: 'UPDATED_AT', value: 'UPDATED_AT DESC', directionLabel: 'Descending'},
+    {label: 'VENDOR', value:'VENDOR ASC', directionLabel: 'Ascending'},
+    {label: 'VENDOR', value:'VENDOR DESC', directionLabel: 'Descending'},
+    // {label: 'CREATED_AT', value: 'CREATED_AT ASC', directionLabel: 'Ascending'},
+    // {label: 'CREATED_AT', value: 'CREATED_AT DESC', directionLabel: 'Descending'},
+    // {label: 'UPDATED_AT', value: 'UPDATED_AT ASC', directionLabel: 'Ascending'},
+    // {label: 'UPDATED_AT', value: 'UPDATED_AT DESC', directionLabel: 'Descending'},
   ];
 
   const {mode, setMode} = useSetIndexFiltersMode();

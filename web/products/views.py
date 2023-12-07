@@ -26,24 +26,52 @@ from django.db.models import Q
 def products(request,pk=None):
     products = shopify.Product.find()
     s = ProductSerializer(products,many=True)
+
+    filter_value = request.GET.get('sort')
+    if filter_value:
+        value = filter_data(s,filter_value)
+    else:
+        value = [s for s in s.data]
+    
     search_value = request.GET.get('search')
     if search_value:
+        result = search_data(s,search_value)
+        return Response(result)
+    else:
+        result = [s for s in s.data]
+    
         
-        status_data = [s for s in s.data if s['status']==search_value]
-        if status_data:
-            return Response(status_data)
+    return Response(value)
 
-        vendor_data = [s for s in s.data if s['vendor']==search_value]
-        if vendor_data:
-            return Response(vendor_data)
-        
-        title_data = [s for s in s.data if search_value in s['title']]
-        if title_data:
-            return Response(title_data)
-        
-        return Response(s.data)
 
-    return Response(s.data)
+def filter_data(s,filter_value):
+    if filter_value == 'TITLE ASC':
+        data = [i for i in sorted(s.data,key=lambda x : x['title'])]
+        return data
+    if filter_value == 'TITLE DESC':
+        data = [i for i in sorted(s.data,key=lambda x : x['title'],reverse=True)]
+        return data
+    if filter_value == 'VENDOR ASC':
+        data = [i for i in sorted(s.data,key=lambda x : x['vendor'])]
+        return data
+    if filter_value == 'VENDOR DESC':
+        data = [i for i in sorted(s.data,key=lambda x : x['vendor'],reverse=True)]
+        return data
+
+
+
+def search_data(s,search_value):
+    status_data = [s for s in s if s['status']==search_value]
+    if status_data:
+        return status_data
+
+    vendor_data = [s for s in s if s['vendor']==search_value]
+    if vendor_data:
+        return vendor_data
+    
+    title_data = [s for s in s if search_value in s['title']]
+    if title_data:
+        return title_data
 
 @csrf_exempt
 @session_token_required
