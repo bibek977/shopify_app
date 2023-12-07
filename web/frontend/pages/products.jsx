@@ -32,16 +32,17 @@ export default function Products() {
 
   // const [title,setTitle] = useState('new shorts cotton')
   // const [title,setTitle] = useState('draft')
-  const [title,setTitle] = useState("")
+  const [searchTitle,setSearchTitle] = useState("")
   const [queryValue, setQueryValue] = useState('');
-  const [sortData,setSortData] = useState('')
+  // const [sortData,setSortData] = useState('')
   const [sortSelected, setSortSelected] = useState('TITLE ASC');
   useEffect(() => {
     let change;
     clearTimeout(change);
     change = setTimeout(() => {
-         setTitle(queryValue);
-         setSortData(sortSelected);
+      setSearchTitle(queryValue);
+      // setSortData(sortSelected);
+      sortSelected()
     }, 2000);
     return () => clearTimeout(change);
 }, [queryValue]);
@@ -52,7 +53,7 @@ export default function Products() {
   // }})
   
   // dinesh
-  const URL = `/api/products?search=${title}&sort=${sortData}`
+  const URL = `/api/products?search=${searchTitle}&sort=${sortSelected}`
      const [url, setUrl] = useState(URL);
 
      useEffect(() => {
