@@ -1,6 +1,7 @@
 from rest_framework import serializers
 import shopify
-
+from apps.accounts.decorators import session_token_required
+from .models import Products
 
 # STATUS_CHOICES = (
 #     ('active','ACTIVE'),
@@ -35,8 +36,8 @@ class ProductSerializer(serializers.Serializer):
     
 
     
-# class ProductModelSerializer(serializers.ModelSerializer):
+class ProductModelSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = shopify.Product()
-#         fields = ['id','title','published_at','updated_at','status','vendor']
+    class Meta:
+        model = Products
+        fields = ['id','title','published_at','updated_at','status','vendor']

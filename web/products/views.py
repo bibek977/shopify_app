@@ -3,11 +3,11 @@ from apps.accounts.decorators import session_token_required,session_token
 from django.http import HttpResponse,JsonResponse
 import shopify
 from rest_framework.generics import GenericAPIView,ListAPIView
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer,ProductModelSerializer
 from rest_framework.permissions import IsAuthenticated
 from apps.accounts.authentication import ShopifyAuthentication
 from rest_framework.response import Response
-# from .models import Products
+from .models import Products
 from rest_framework.renderers import JSONRenderer
 from rest_framework import viewsets
 import json
@@ -19,12 +19,30 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 @session_token_required
 @api_view(['GET','POST'])
-def products(request):
+def products(request,pk=None):
     products = shopify.Product.find()
     s = ProductSerializer(products,many=True)
+    search_value = request.GET.get('search')
+    if search_value:
+        
+        status_data = [s for s in s.data if s['status']==search_value]
+        if status_data:
+            return Response(status_data)
+
+        vendor_data = [s for s in s.data if s['vendor']==search_value]
+        if vendor_data:
+            return Response(vendor_data)
+        
+        title_data = [s for s in s.data if search_value in s['title']]
+        if title_data:
+            return Response(title_data)
+        
+        return Response(s.data)
+
     return Response(s.data)
 
 @csrf_exempt
@@ -72,8 +90,4 @@ def delete_products(request,*args, **kwargs):
         return Response({'id':f"{title} deleted"})
 
 
-@method_decorator(session_token_required,name='dispatch')
-class ProductsView(viewsets.ModelViewSet):
-
-    queryset = shopify.Product()
-    serializer_class = ProductSerializer
+# class ProductView()

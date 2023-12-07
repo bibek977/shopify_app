@@ -25,11 +25,54 @@ export default function Products() {
   const queryClient = useQueryClient()
   const queryCache = queryClient.getQueryCache()
 
-  const {data:ddata, isLoading}=useAppQuery({url:'api/products',tag : ['products'], reactQueryOptions:{
-    // onSuccess:(data)=>console.log(data)
-  }})
+  // const {data:ddata, isLoading}=useAppQuery({url:'api/products',tag : ['products'], reactQueryOptions:{
+  //   // onSuccess:(data)=>console.log(data.filter((e)=>e.title=="gold star"))
+  //   onSuccess:(data)=>console.log(data)
+  // }})
+
+  // const [title,setTitle] = useState('new shorts cotton')
+  // const [title,setTitle] = useState('draft')
+  const [title,setTitle] = useState("")
+  const [queryValue, setQueryValue] = useState('');
+  const [sortSelected, setSortSelected] = useState('TITLE ASC');
+  useEffect(() => {
+    let change;
+    clearTimeout(change);
+    change = setTimeout(() => {
+         setTitle(queryValue);
+    }, 2000);
+    return () => clearTimeout(change);
+}, [queryValue]);
+  // const {data:ddata, isLoading}=useAppQuery({url:`api/products?search=${queryValue}`,tag : ['products'], reactQueryOptions:{
+  //   enabled:true,
+  //   // onSuccess:(data)=>console.log(data.filter((e)=>e.title=="gold star"))
+  //   onSuccess:(data)=>console.log(data)
+  // }})
   
-  
+  // dinesh
+  const URL = `/api/products?search=${title}&sort=${sortSelected}`
+     const [url, setUrl] = useState(URL);
+
+     useEffect(() => {
+          setUrl(URL);
+          setApiHit(true);
+     }, [URL]);
+
+     const [apiHit, setApiHit] = useState(true);
+
+     const { data: ddata, isLoading } = useAppQuery({
+          url: url,
+          tag: ["products"],
+          reactQueryOptions: {
+               enabled: apiHit,
+               keepPreviousData: true,
+               onSuccess: (data) => {
+                    console.log("data", data);
+                    setApiHit(false);
+               },
+          },
+     });
+  // dinehs
 
   const {state:daata} = queryCache.find(['products'])
 
@@ -120,7 +163,7 @@ export default function Products() {
     return true;
   };
   const sortOptions= [
-    {label: 'Title', value: 'TITLE ASC', directionLabel: 'Ascending'},
+    {label: 'TITLE', value: 'TITLE ASC', directionLabel: 'Ascending'},
     {label: 'TITLE', value: 'TITLE DESC', directionLabel: 'Descending'},
     {label: 'VENDOR', value:'VENDOR ', directionLabel: 'VENDOR'},
     {label: 'CREATED_AT', value: 'CREATED_AT ASC', directionLabel: 'Ascending'},
@@ -128,7 +171,7 @@ export default function Products() {
     {label: 'UPDATED_AT', value: 'UPDATED_AT ASC', directionLabel: 'Ascending'},
     {label: 'UPDATED_AT', value: 'UPDATED_AT DESC', directionLabel: 'Descending'},
   ];
-  const [sortSelected, setSortSelected] = useState(['order asc']);
+
   const {mode, setMode} = useSetIndexFiltersMode();
   const onHandleCancel = () => {};
 
@@ -158,7 +201,7 @@ export default function Products() {
     undefined,
   );
   const [taggedWith, setTaggedWith] = useState('');
-  const [queryValue, setQueryValue] = useState('');
+  
 
   const handleAccountStatusChange = useCallback(
     (value) => setAccountStatus(value),
