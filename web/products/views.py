@@ -27,24 +27,20 @@ def products(request,pk=None):
     products = shopify.Product.find()
     s = ProductSerializer(products,many=True)
 
-    # search_value = request.GET.get('search')
-    # if search_value:
-    #     result = search_data(s,search_value)
-    #     return Response(result)
-    # else:
-    #     result = [s for s in s.data]
+    result = s.data
 
     filter_value = request.GET.get('sort')
     if filter_value:
-        value = filter_data(s,filter_value)
-        return Response(value)
-    # else:
-    #     value = [s for s in s.data]
-    
+        result = filter_data(s,filter_value)
+        # return Response(result)
 
-    
+    search_value = request.GET.get('search')
+    if search_value:
+        result = search_data(s,search_value)
+        # return Response(result)
+
         
-    return Response(s.data)
+    return Response(result)
 
 
 def filter_data(s,filter_value):

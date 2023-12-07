@@ -34,18 +34,17 @@ export default function Products() {
   // const [title,setTitle] = useState('draft')
   const [searchTitle,setSearchTitle] = useState("")
   const [queryValue, setQueryValue] = useState('');
-  // const [sortData,setSortData] = useState('')
+  const [sortData,setSortData] = useState('')
   const [sortSelected, setSortSelected] = useState('TITLE ASC');
   useEffect(() => {
     let change;
     clearTimeout(change);
     change = setTimeout(() => {
       setSearchTitle(queryValue);
-      // setSortData(sortSelected);
-      sortSelected()
+      setSortData(sortSelected);
     }, 2000);
     return () => clearTimeout(change);
-}, [queryValue]);
+}, [queryValue,sortSelected]);
   // const {data:ddata, isLoading}=useAppQuery({url:`api/products?search=${queryValue}`,tag : ['products'], reactQueryOptions:{
   //   enabled:true,
   //   // onSuccess:(data)=>console.log(data.filter((e)=>e.title=="gold star"))
@@ -53,7 +52,7 @@ export default function Products() {
   // }})
   
   // dinesh
-  const URL = `/api/products?search=${searchTitle}&sort=${sortSelected}`
+  const URL = `/api/products?search=${searchTitle}&sort=${sortData}`
      const [url, setUrl] = useState(URL);
 
      useEffect(() => {
