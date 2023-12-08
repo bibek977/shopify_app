@@ -30,14 +30,19 @@ def products(request,pk=None):
     result = s.data
 
     filter_value = request.GET.get('sort')
-    if filter_value:
-        result = filter_data(s,filter_value)
+    # if filter_value:
+    #     result = filter_data(s,filter_value)
         # return Response(result)
 
     search_value = request.GET.get('search')
     if search_value:
-        result = search_data(s,search_value)
+        result = search_data(s,search_value,filter_value)
+        search_value = ''
         # return Response(result)
+    else:
+        if filter_value :
+            result = filter_data(s.data,filter_value)
+            # return Response(result)
 
         
     return Response(result)
@@ -45,32 +50,48 @@ def products(request,pk=None):
 
 def filter_data(s,filter_value):
     if filter_value == 'TITLE ASC':
-        data = [s for s in sorted(s.data,key=lambda x : x['title'])]
+        data = [s for s in sorted(s,key=lambda x : x['title'])]
         return data
     if filter_value == 'TITLE DESC':
-        data = [s for s in sorted(s.data,key=lambda x : x['title'],reverse=True)]
+        data = [s for s in sorted(s,key=lambda x : x['title'],reverse=True)]
         return data
     if filter_value == 'VENDOR ASC':
-        data = [s for s in sorted(s.data,key=lambda x : x['vendor'])]
+        data = [s for s in sorted(s,key=lambda x : x['vendor'])]
         return data
     if filter_value == 'VENDOR DESC':
-        data = [s for s in sorted(s.data,key=lambda x : x['vendor'],reverse=True)]
+        data = [s for s in sorted(s,key=lambda x : x['vendor'],reverse=True)]
         return data
 
 
 
-def search_data(s,search_value):
+def search_data(s,search_value,filter_value):
     status_data = [s for s in s.data if s['status']==search_value]
     if status_data:
+        if filter_value:
+            status_data = filter_data(status_data,filter_value)
+            return status_data
         return status_data
 
     vendor_data = [s for s in s.data if s['vendor']==search_value]
     if vendor_data:
+        if filter_value:
+            vendor_data = filter_data(vendor_data,filter_value)
+            return vendor_data
         return vendor_data
     
     title_data = [s for s in s.data if search_value in s['title']]
     if title_data:
+        if filter_value:
+            title_data = filter_data(title_data,filter_value)
+            return title_data
         return title_data
+    
+    # else:
+    #     # all = [s for s in s.data]
+    #     if filter_value:
+    #         all = filter_data(s.data,filter_value)
+    #         return all
+    #     return s.data
 
 @csrf_exempt
 @session_token_required
