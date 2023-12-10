@@ -120,7 +120,25 @@ def update_products(request,*args, **kwargs):
             product._update(request.data)
             title = product.title
             product.save()
-            return Response({'id': f"{title} updated"})
+            query = '''
+                  {
+  products (first:100, query:"status:active AND published_status:published") {
+    nodes {
+      id,
+      title,
+      status,
+      vendor,
+      tags,
+      createdAt,
+      updatedAt,
+    }
+  }
+}
+             '''
+            result = shopify.GraphQL().execute(query)
+            # return Response({'type': json.loads(result)})
+            return Response(json.loads(result))
+            # return Response({'id': f"{title} updated"})
         else:
             return Response({'id' : 'validation error'})
     else:
